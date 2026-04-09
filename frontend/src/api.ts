@@ -1,11 +1,13 @@
 import type { Schedule, UnitOperation, UnitOpKind, UnitOpStatus } from './types'
 
+const API_BASE = (import.meta.env.VITE_API_BASE as string | undefined)?.replace(/\/$/, '') ?? ''
+
 export async function fetchSchedule(start: Date, end: Date): Promise<Schedule> {
   const qs = new URLSearchParams({
     start_date: start.toISOString(),
     end_date: end.toISOString(),
   })
-  const res = await fetch(`/api/schedule?${qs.toString()}`)
+  const res = await fetch(`${API_BASE}/api/schedule?${qs.toString()}`)
   if (!res.ok) throw new Error(`Failed to load schedule (${res.status})`)
   return (await res.json()) as Schedule
 }
@@ -23,7 +25,7 @@ export type UnitOpCreate = {
 export type UnitOpUpdate = Partial<UnitOpCreate>
 
 export async function createUnitOp(payload: UnitOpCreate): Promise<UnitOperation> {
-  const res = await fetch(`/api/unit_operations`, {
+  const res = await fetch(`${API_BASE}/api/unit_operations`, {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify(payload),
@@ -33,7 +35,7 @@ export async function createUnitOp(payload: UnitOpCreate): Promise<UnitOperation
 }
 
 export async function updateUnitOp(id: number, payload: UnitOpUpdate): Promise<UnitOperation> {
-  const res = await fetch(`/api/unit_operations/${id}`, {
+  const res = await fetch(`${API_BASE}/api/unit_operations/${id}`, {
     method: 'PUT',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify(payload),
@@ -43,7 +45,7 @@ export async function updateUnitOp(id: number, payload: UnitOpUpdate): Promise<U
 }
 
 export async function deleteUnitOp(id: number): Promise<void> {
-  const res = await fetch(`/api/unit_operations/${id}`, { method: 'DELETE' })
+  const res = await fetch(`${API_BASE}/api/unit_operations/${id}`, { method: 'DELETE' })
   if (!res.ok) throw new Error(`Failed to delete UnitOp (${res.status})`)
 }
 

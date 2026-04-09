@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime, timezone
+import os
 from typing import Annotated
 
 from fastapi import Depends, FastAPI, HTTPException, Query
@@ -25,9 +26,15 @@ from app.seed import seed_if_empty
 
 app = FastAPI(title="BBP Scheduler API", version="0.1.0")
 
+allowed_origins = [
+    o.strip()
+    for o in os.getenv("ALLOWED_ORIGINS", "http://localhost:5173").split(",")
+    if o.strip()
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
