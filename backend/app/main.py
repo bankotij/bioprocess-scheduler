@@ -41,6 +41,11 @@ app.add_middleware(
 )
 
 
+@app.get("/api/health")
+def health() -> dict:
+    return {"ok": True}
+
+
 def _as_utc(dt: datetime) -> datetime:
     if dt.tzinfo is None:
         return dt.replace(tzinfo=timezone.utc)
