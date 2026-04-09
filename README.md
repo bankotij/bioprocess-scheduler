@@ -31,6 +31,15 @@ Open `http://localhost:5173`.
 - Click a UnitOp to open the **edit modal** (start/end/equipment/status/color).
 - UnitOps with backend constraint violations show a **red outline** and a `!` indicator.
 
+### Screenshots / demo
+Place images in `media/` and they will render below on GitHub.
+
+![Scheduler grid](media/frontend.png)
+![Create UnitOp](media/new_unit_operation.png)
+![UnitOp modal](media/unitop_modal.png)
+
+Demo video: [bbp.mp4](media/bbp.mp4)
+
 ### Constraint enforcement (backend)
 The backend computes violations for each UnitOp and returns them in `GET /api/schedule`.
 
