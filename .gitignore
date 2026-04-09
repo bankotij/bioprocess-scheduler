@@ -1,0 +1,28 @@
+.DS_Store
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+frontend/.env.*
+
+# Backend
+backend/.venv/
+backend/__pycache__/
+backend/*.sqlite
+backend/*.db
+
+# Python
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+
+# Editor
+.vscode/
+.idea/
+

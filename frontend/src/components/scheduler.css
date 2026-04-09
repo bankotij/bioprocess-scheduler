@@ -1,0 +1,347 @@
+:root {
+  --bg: #0b1220;
+  --panel: rgba(255, 255, 255, 0.06);
+  --panel2: rgba(255, 255, 255, 0.08);
+  --text: rgba(255, 255, 255, 0.92);
+  --muted: rgba(255, 255, 255, 0.65);
+  --border: rgba(255, 255, 255, 0.12);
+  --danger: #ef4444;
+}
+
+.scheduler {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--panel);
+}
+
+.toolbarLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  text-align: left;
+}
+
+.toolbarRight {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.title {
+  font-weight: 720;
+  letter-spacing: 0.2px;
+}
+
+.subtle {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.btn {
+  height: 34px;
+  padding: 0 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--text);
+  cursor: pointer;
+  font-weight: 650;
+}
+
+.btn:hover {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btnGhost {
+  background: transparent;
+}
+
+.btnDanger {
+  border-color: rgba(239, 68, 68, 0.6);
+  background: rgba(239, 68, 68, 0.16);
+}
+
+.error {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.92);
+  background: rgba(239, 68, 68, 0.18);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  padding: 6px 10px;
+  border-radius: 10px;
+  max-width: 360px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.gridShell {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--panel);
+}
+
+.gridHeader {
+  display: grid;
+  grid-template-columns: 190px 1fr;
+  border-bottom: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.laneHeader {
+  padding: 10px 12px;
+  font-size: 12px;
+  color: var(--muted);
+  border-right: 1px solid var(--border);
+}
+
+.datesHeader {
+  display: flex;
+  overflow: hidden;
+}
+
+.dayCell {
+  font-size: 12px;
+  color: var(--muted);
+  padding: 10px 0;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.gridBody {
+  display: grid;
+  grid-template-columns: 190px 1fr;
+  height: 560px;
+}
+
+.laneLabels {
+  border-right: 1px solid var(--border);
+  overflow: auto;
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.laneLabel {
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  box-sizing: border-box;
+}
+
+.laneName {
+  font-weight: 650;
+  font-size: 13px;
+}
+
+.timeline {
+  position: relative;
+  overflow: auto;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.gridBg {
+  position: absolute;
+  inset: 0;
+  display: flex;
+}
+
+.gridCol {
+  height: 100%;
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
+  box-sizing: border-box;
+}
+
+.envelopes,
+.ops {
+  position: absolute;
+  inset: 0;
+}
+
+.batchEnvelope {
+  position: absolute;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.2);
+}
+
+.batchLabel {
+  position: absolute;
+  top: -10px;
+  left: 10px;
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: rgba(255, 255, 255, 0.88);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.op {
+  position: absolute;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 10px;
+  box-sizing: border-box;
+  cursor: pointer;
+  color: rgba(0, 0, 0, 0.82);
+  text-align: left;
+  overflow: hidden;
+}
+
+.opText {
+  font-size: 12px;
+  font-weight: 750;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.opWarn {
+  margin-left: auto;
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  font-weight: 900;
+}
+
+.opBad {
+  outline: 2px solid rgba(239, 68, 68, 0.9);
+  outline-offset: 1px;
+}
+
+.toast {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(10px);
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 12px;
+}
+
+.modalGrid {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 14px;
+}
+
+.summaryCard,
+.formCard {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 12px;
+}
+
+.summaryTitle {
+  font-weight: 800;
+  margin-bottom: 2px;
+}
+
+.summaryLine {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.okPill {
+  margin-top: 10px;
+  display: inline-flex;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  background: rgba(16, 185, 129, 0.12);
+  font-size: 12px;
+}
+
+.violations {
+  margin-top: 10px;
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  background: rgba(239, 68, 68, 0.12);
+  border-radius: 12px;
+  padding: 10px;
+}
+
+.violationsTitle {
+  font-weight: 800;
+  font-size: 12px;
+  margin-bottom: 6px;
+}
+
+.violations ul {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 12px;
+}
+
+.fieldRow {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  gap: 10px;
+  align-items: center;
+  padding: 8px 0;
+}
+
+.fieldLabel {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.input {
+  width: 100%;
+  height: 34px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(0, 0, 0, 0.25);
+  color: var(--text);
+  padding: 0 10px;
+  box-sizing: border-box;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.finePrint {
+  margin-top: 10px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.formGrid2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px 14px;
+}
