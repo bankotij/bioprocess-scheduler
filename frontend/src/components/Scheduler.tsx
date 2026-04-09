@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import type { Batch, Equipment, Schedule, UnitOperation, UnitOpKind, UnitOpStatus } from '../types'
 import { addDays, diffDays, formatDayLabel, startOfDay } from '../date'
 import { createUnitOp, deleteUnitOp, updateUnitOp } from '../api'
@@ -52,6 +52,8 @@ export function Scheduler({
   visibleEnd: Date
   onReload: () => Promise<void>
 }) {
+  const timelineRef = useRef<HTMLDivElement | null>(null)
+  const headerRef = useRef<HTMLDivElement | null>(null)
   const [selectedId, setSelectedId] = useState<number | null>(null)
   const [creating, setCreating] = useState(false)
   const [busy, setBusy] = useState<string | null>(null)
@@ -136,6 +138,13 @@ export function Scheduler({
   const gridW = days.length * DAY_PX
   const gridH = schedule.equipment.length * ROW_H
 
+  useEffect(() => {
+    const t = timelineRef.current
+    const h = headerRef.current
+    if (!t || !h) return
+    h.scrollLeft = t.scrollLeft
+  }, [gridW])
+
   async function run<T>(label: string, fn: () => Promise<T>): Promise<T | null> {
     setError(null)
     setBusy(label)
@@ -175,12 +184,14 @@ export function Scheduler({
       <div className="gridShell">
         <div className="gridHeader">
           <div className="laneHeader">Equipment</div>
-          <div className="datesHeader" style={{ width: gridW }}>
-            {days.map((d) => (
-              <div key={d.toISOString()} className="dayCell" style={{ width: DAY_PX }}>
-                {formatDayLabel(d)}
-              </div>
-            ))}
+          <div className="datesViewport" ref={headerRef}>
+            <div className="datesHeader" style={{ width: gridW }}>
+              {days.map((d) => (
+                <div key={d.toISOString()} className="dayCell" style={{ width: DAY_PX }}>
+                  {formatDayLabel(d)}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
@@ -193,75 +204,86 @@ export function Scheduler({
             ))}
           </div>
 
-          <div className="timeline" style={{ width: gridW, height: gridH }}>
-            <div className="gridBg" style={{ width: gridW, height: gridH }}>
-              {days.map((d) => (
-                <div key={d.toISOString()} className="gridCol" style={{ width: DAY_PX }} />
-              ))}
-            </div>
+          <div
+            className="timelineViewport"
+            ref={timelineRef}
+            onScroll={() => {
+              const t = timelineRef.current
+              const h = headerRef.current
+              if (!t || !h) return
+              h.scrollLeft = t.scrollLeft
+            }}
+          >
+            <div className="timelineContent" style={{ width: gridW, height: gridH }}>
+              <div className="gridBg" style={{ width: gridW, height: gridH }}>
+                {days.map((d) => (
+                  <div key={d.toISOString()} className="gridCol" style={{ width: DAY_PX }} />
+                ))}
+              </div>
 
-            <div className="envelopes" style={{ width: gridW, height: gridH }}>
-              {Array.from(layout.batchBounds.entries()).map(([batchId, r]) => {
-                const b = batchById.get(batchId)
-                if (!b) return null
-                const pad = 6
-                const labelW = Math.min(220, r.w)
-                return (
-                  <div
-                    key={batchId}
-                    className="batchEnvelope"
-                    style={{
-                      left: r.x - pad,
-                      top: r.y - pad,
-                      width: r.w + pad * 2,
-                      height: r.h + pad * 2,
-                    }}
-                    title={`${b.name} (${new Date(b.start).toLocaleDateString()} – ${new Date(b.end).toLocaleDateString()})`}
-                  >
-                    <div className="batchLabel" style={{ maxWidth: labelW }}>
-                      {b.name}
+              <div className="envelopes" style={{ width: gridW, height: gridH }}>
+                {Array.from(layout.batchBounds.entries()).map(([batchId, r]) => {
+                  const b = batchById.get(batchId)
+                  if (!b) return null
+                  const pad = 6
+                  const labelW = Math.min(220, r.w)
+                  return (
+                    <div
+                      key={batchId}
+                      className="batchEnvelope"
+                      style={{
+                        left: r.x - pad,
+                        top: r.y - pad,
+                        width: r.w + pad * 2,
+                        height: r.h + pad * 2,
+                      }}
+                      title={`${b.name} (${new Date(b.start).toLocaleDateString()} – ${new Date(b.end).toLocaleDateString()})`}
+                    >
+                      <div className="batchLabel" style={{ maxWidth: labelW }}>
+                        {b.name}
+                      </div>
                     </div>
-                  </div>
-                )
-              })}
-            </div>
+                  )
+                })}
+              </div>
 
-            <div className="ops" style={{ width: gridW, height: gridH }}>
-              {schedule.unit_operations.map((op) => {
-                const r = layout.opRects.get(op.id)
-                if (!r) return null
-                const b = batchById.get(op.batch_id)
-                const hasViolations = op.violations.length > 0
-                const title = [
-                  `${b?.name ?? `Batch ${op.batch_id}`} · ${kindLabel(op.kind)}`,
-                  `${new Date(op.start).toLocaleString()} → ${new Date(op.end).toLocaleString()}`,
-                  `Status: ${statusBadge(op.status)}`,
-                  hasViolations ? `Violations:\n- ${op.violations.map((v) => v.message).join('\n- ')}` : '',
-                ]
-                  .filter(Boolean)
-                  .join('\n')
+              <div className="ops" style={{ width: gridW, height: gridH }}>
+                {schedule.unit_operations.map((op) => {
+                  const r = layout.opRects.get(op.id)
+                  if (!r) return null
+                  const b = batchById.get(op.batch_id)
+                  const hasViolations = op.violations.length > 0
+                  const title = [
+                    `${b?.name ?? `Batch ${op.batch_id}`} · ${kindLabel(op.kind)}`,
+                    `${new Date(op.start).toLocaleString()} → ${new Date(op.end).toLocaleString()}`,
+                    `Status: ${statusBadge(op.status)}`,
+                    hasViolations ? `Violations:\n- ${op.violations.map((v) => v.message).join('\n- ')}` : '',
+                  ]
+                    .filter(Boolean)
+                    .join('\n')
 
-                return (
-                  <button
-                    key={op.id}
-                    className={`op ${hasViolations ? 'opBad' : ''}`}
-                    style={{
-                      left: r.x,
-                      top: r.y,
-                      width: r.w,
-                      height: r.h,
-                      background: op.color,
-                    }}
-                    onClick={() => setSelectedId(op.id)}
-                    title={title}
-                  >
-                    <span className="opText">
-                      {kindLabel(op.kind)} · {b?.name ?? `Batch ${op.batch_id}`}
-                    </span>
-                    {hasViolations ? <span className="opWarn">!</span> : null}
-                  </button>
-                )
-              })}
+                  return (
+                    <button
+                      key={op.id}
+                      className={`op ${hasViolations ? 'opBad' : ''}`}
+                      style={{
+                        left: r.x,
+                        top: r.y,
+                        width: r.w,
+                        height: r.h,
+                        background: op.color,
+                      }}
+                      onClick={() => setSelectedId(op.id)}
+                      title={title}
+                    >
+                      <span className="opText">
+                        {kindLabel(op.kind)} · {b?.name ?? `Batch ${op.batch_id}`}
+                      </span>
+                      {hasViolations ? <span className="opWarn">!</span> : null}
+                    </button>
+                  )
+                })}
+              </div>
             </div>
           </div>
         </div>
