@@ -1,4 +1,4 @@
-## BBP Bioprocess Scheduling (Take-home)
+## Bioprocess Scheduling
 
 ### What this is
 Desktop-only proof-of-concept scheduler to plan **batches** and their **unit operations** across **equipment lanes**, with backend-enforced constraints and UI warnings.
