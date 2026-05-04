@@ -1,7 +1,108 @@
 .app {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+.appHero {
+  padding: 22px 22px 20px;
+  border-radius: 16px;
+  border: 1px solid rgba(99, 102, 241, 0.22);
+  background: linear-gradient(
+    135deg,
+    rgba(30, 41, 59, 0.92) 0%,
+    rgba(15, 23, 42, 0.98) 48%,
+    rgba(49, 46, 129, 0.35) 100%
+  );
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.35);
+}
+
+.appHeroTop {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 12px 16px;
+  margin-bottom: 10px;
+}
+
+.appEyebrow {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 650;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(165, 180, 252, 0.95);
+}
+
+.appTitle {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 750;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  color: rgba(255, 255, 255, 0.98);
+}
+
+.appLead {
+  margin: 0 0 14px;
+  font-size: 0.95rem;
+  line-height: 1.55;
+  color: rgba(226, 232, 240, 0.88);
+  max-width: 72ch;
+}
+
+.appHighlights {
+  margin: 0;
+  padding-left: 1.15rem;
+  display: grid;
+  gap: 8px;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: rgba(203, 213, 225, 0.82);
+}
+
+.appHighlights strong {
+  color: rgba(224, 231, 255, 0.95);
+  font-weight: 650;
+}
+
+.statRow {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(128px, 1fr));
+  gap: 10px;
+}
+
+.statCard {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.statCardWarn {
+  border-color: rgba(251, 191, 36, 0.35);
+  background: rgba(251, 191, 36, 0.06);
+}
+
+.statValue {
+  font-size: 1.35rem;
+  font-weight: 750;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.statLabel {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: rgba(148, 163, 184, 0.85);
 }
 
 .rangeBar {

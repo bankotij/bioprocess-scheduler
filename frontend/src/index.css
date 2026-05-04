@@ -1,9 +1,18 @@
 :root {
   color-scheme: dark;
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  font-family:
+    'Inter',
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    sans-serif;
   font-size: 14px;
   line-height: 1.35;
-  background: #0b1220;
+  background-color: #070b14;
+  background-image:
+    radial-gradient(ellipse 120% 80% at 50% -20%, rgba(79, 70, 229, 0.18), transparent 55%),
+    radial-gradient(ellipse 80% 50% at 100% 50%, rgba(14, 165, 233, 0.08), transparent 45%);
   color: rgba(255, 255, 255, 0.92);
 }
 
