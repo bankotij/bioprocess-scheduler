@@ -10,11 +10,14 @@
 
 .modal {
   width: min(760px, 100%);
-  background: var(--panel);
-  color: var(--text);
-  border: 1px solid var(--border);
+  /* Not using --panel here: that token is a 6% glass wash for the grid, which
+     makes full-screen dialogs look accidentally “empty.” Dialogs get a real surface. */
+  background: rgba(15, 23, 42, 0.94);
+  color: var(--text, rgba(255, 255, 255, 0.92));
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.14));
   border-radius: 12px;
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(12px);
 }
 
 .modalHeader {
