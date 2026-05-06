@@ -4,6 +4,7 @@ from datetime import datetime, timedelta, timezone
 
 from sqlmodel import Session, select
 
+from app.constraints import recompute_dependencies_for_batch
 from app.models import Batch, Equipment, UnitOpKind, UnitOperation, UnitOpStatus
 
 
@@ -85,4 +86,7 @@ def seed_if_empty(session: Session) -> None:
 
     session.add_all(ops)
     session.commit()
+
+    for bid in (b1.id, b2.id):
+        recompute_dependencies_for_batch(session, bid)
 

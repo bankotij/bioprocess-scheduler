@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import type { Batch, Equipment, Schedule, UnitOperation, UnitOpKind, UnitOpStatus } from '../types'
 import { addDays, diffDays, formatDayLabel, startOfDay } from '../date'
 import { createUnitOp, deleteUnitOp, updateUnitOp } from '../api'
@@ -9,6 +9,8 @@ const DAY_PX = 44
 const ROW_H = 56
 const OP_H = 22
 const OP_GAP = 4
+/** Align bar positions with the date grid (avoids local/UTC day rounding pushing bars off-screen). */
+const MS_PER_DAY = 24 * 60 * 60 * 1000
 
 function parseIso(s: string): Date {
   return new Date(s)
@@ -96,11 +98,9 @@ export function Scheduler({
       for (const op of ops) {
         const s = parseIso(op.start)
         const e = parseIso(op.end)
-        const x = (diffDays(startOfDay(visibleStart), s) + (s.getHours() + s.getMinutes() / 60) / 24) * DAY_PX
-        const w = Math.max(
-          8,
-          ((e.getTime() - s.getTime()) / (24 * 60 * 60 * 1000)) * DAY_PX,
-        )
+        const t0 = startOfDay(visibleStart).getTime()
+        const x = ((s.getTime() - t0) / MS_PER_DAY) * DAY_PX
+        const w = Math.max(8, ((e.getTime() - s.getTime()) / MS_PER_DAY) * DAY_PX)
 
         let stackIdx = 0
         for (; stackIdx < stacks.length; stackIdx++) {
@@ -144,6 +144,24 @@ export function Scheduler({
     if (!t || !h) return
     h.scrollLeft = t.scrollLeft
   }, [gridW])
+
+  /** First paint: scroll timeline so bars aren’t stuck off-viewport (common after cold load). */
+  useLayoutEffect(() => {
+    const t = timelineRef.current
+    const h = headerRef.current
+    if (!t || schedule.unit_operations.length === 0) return
+    let minX = Infinity
+    for (const op of schedule.unit_operations) {
+      const r = layout.opRects.get(op.id)
+      if (r) minX = Math.min(minX, r.x)
+    }
+    if (minX === Infinity) return
+    const vw = t.clientWidth
+    if (minX < 12 || minX > vw - 100) {
+      t.scrollLeft = Math.max(0, minX - 32)
+      if (h) h.scrollLeft = t.scrollLeft
+    }
+  }, [layout, schedule.unit_operations.length, gridW])
 
   async function run<T>(label: string, fn: () => Promise<T>): Promise<T | null> {
     setError(null)

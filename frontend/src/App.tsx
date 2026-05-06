@@ -22,6 +22,7 @@ function App() {
   const [schedule, setSchedule] = useState<Schedule | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [slowHint, setSlowHint] = useState(false)
 
   const rangeLabel = useMemo(() => {
     const a = visibleStart.toLocaleDateString()
@@ -33,6 +34,7 @@ function App() {
 
   async function reload() {
     setError(null)
+    setSlowHint(false)
     setLoading(true)
     try {
       const data = await fetchSchedule(visibleStart, visibleEnd)
@@ -43,6 +45,12 @@ function App() {
       setLoading(false)
     }
   }
+
+  useEffect(() => {
+    if (!loading) return
+    const t = window.setTimeout(() => setSlowHint(true), 4000)
+    return () => window.clearTimeout(t)
+  }, [loading])
 
   useEffect(() => {
     void reload()
@@ -148,7 +156,15 @@ function App() {
       {schedule ? (
         <Scheduler schedule={schedule} visibleStart={visibleStart} visibleEnd={visibleEnd} onReload={reload} />
       ) : (
-        <div className="emptyState">Loading schedule…</div>
+        <div className="emptyState">
+          <div className="emptyStateTitle">{loading ? 'Loading schedule…' : 'No data'}</div>
+          {loading && slowHint ? (
+            <p className="emptyStateHint">
+              First request after idle can take a bit while the API wakes up — the chart will appear as
+              soon as data arrives.
+            </p>
+          ) : null}
+        </div>
       )}
     </div>
   )

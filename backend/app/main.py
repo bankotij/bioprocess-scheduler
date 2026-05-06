@@ -54,12 +54,10 @@ def _as_utc(dt: datetime) -> datetime:
 
 @app.on_event("startup")
 def _startup() -> None:
+    """DB + seed only. Dependency edges are recomputed on seed and on writes — not on every cold start."""
     init_db()
     with next(get_session()) as session:
         seed_if_empty(session)
-        batch_ids = session.exec(select(Batch.id)).all()
-        for bid in batch_ids:
-            recompute_dependencies_for_batch(session, bid)
 
 
 @app.get("/api/schedule", response_model=ScheduleOut)

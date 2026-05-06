@@ -11,7 +11,11 @@ def _db_path() -> str:
     return str(base / "bbp.sqlite")
 
 
-engine = create_engine(f"sqlite:///{_db_path()}", connect_args={"check_same_thread": False})
+engine = create_engine(
+    f"sqlite:///{_db_path()}",
+    connect_args={"check_same_thread": False},
+    pool_pre_ping=True,
+)
 
 
 def init_db() -> None:
